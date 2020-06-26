@@ -18,9 +18,8 @@
 }
 
 
-if (FALSE)
-{
 # ---- sandbox ----
+{
   
   if (!require("rspatial")) devtools::install_github('rspatial/rspatial')
   library(rspatial)
@@ -38,8 +37,6 @@ if (FALSE)
   pop  <- as.im(img)
 }
 
-
-if (FALSE)
 {
   # ---- spatial_points_sp_example ----
   
@@ -61,17 +58,17 @@ if (FALSE)
 }
 
 
-# ---- data_prep ----
+# ---- sp_example_data ---
 {
   
   # data from rspatial
   city = sp_data('city')
   crime = sp_data('crime')
-  crime$CATEGORY = factor(crime$CATEGORY)
+  
   # get rid of crime points outside the city polygon, to make the examples simpler
   require(rgeos)
   crime = crime[gIntersects(crime, city, byid = TRUE)[1, ], ]
-   
+  
   
   if (FALSE)
   {
@@ -83,10 +80,8 @@ if (FALSE)
   
   # Keep only three types to simplify the example
   table(crime$CATEGORY)
-  category_keep = c("Residential Burglary", "Vehicle Burglary", "Vandalism")
-  crime_subset = subset(crime, CATEGORY %in% category_keep)  
-  crime_subset$CATEGORY = droplevels(crime_subset$CATEGORY)
-    
+  
+  
 }
 
 {
@@ -134,8 +129,6 @@ if (FALSE)
     X = coordinates(crime_subset),
     W = city_owin)
   
-  
-  
   # add marks
   # if marks aren't a factor, the ppp object won't be 'multitype' and the cross functions will fail
   marks(crime_ppp_category) = factor(crime_subset$CATEGORY)
@@ -145,14 +138,13 @@ if (FALSE)
   table(crime_ppp_category$marks)
   
   
-  
-  # complete spatial randomness
+  # random relabling
   
   set.seed(1)
-  l_env_crime_cat_burg_csr = envelope(
+  l_env_crime_cat_burg_2 = envelope(
     crime_ppp_category, 
     fun = Lcross,
-    simulate = expression(rlabel(crime_ppp_category)),
+    # simulate = expression(rlabel(crime_ppp_category)),
     nsim = 99,
     rank = 1,
     global = FALSE,
@@ -163,25 +155,8 @@ if (FALSE)
       i = "Residential Burglary",
       j = "Vehicle Burglary")
     )
-  plot(l_env_crime_cat_burg_csr, . -r ~ r, legend = FALSE)  
   
-  
-  # random relabling
-  l_env_crime_cat_burg_relab = envelope(
-    crime_ppp_category, 
-    fun = Lcross,
-    simulate = expression(rlabel(crime_ppp_category)),
-    nsim = 99,
-    rank = 1,
-    global = FALSE,
-    verbose = TRUE,
-    savefuns = TRUE,
-    funargs = list(
-      correction = "iso", 
-      i = "Residential Burglary",
-      j = "Vehicle Burglary")
-  )
-  
-  plot(l_env_crime_cat_burg_relab, . -r ~ r, legend = FALSE)  
+  plot(l_env_crime_cat_burg, . -r ~ r)  
+  plot(l_env_crime_cat_burg_2, . -r ~ r)  
   
 }
