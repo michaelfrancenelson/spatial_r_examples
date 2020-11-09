@@ -183,5 +183,9 @@ if (FALSE)
   )
   
   plot(l_env_crime_cat_burg_relab, . -r ~ r, legend = FALSE)  
+  plot(l_env_crime_cat_burg_csr, . -r ~ r, legend = FALSE)  
+
+  save(l_env_crime_cat_burg_csr, file = here("data", "r_objects", "l_env_crime_cat_burg_csr.Rdata"))
+  save(l_env_crime_cat_burg_relab, file = here("data", "r_objects", "l_env_crime_cat_burg_relab.Rdata"))
   
 }
